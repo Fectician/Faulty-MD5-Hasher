@@ -9,13 +9,11 @@ namespace MD5Hasher
 {
     class Program
     {
-        
         static void Main(string[] args)
         {
             MD5Hasher hasher = new MD5Hasher();
-            string Result = hasher.DoFullHashWithStringUTF8("");
-            Console.WriteLine(Result);
+            Console.WriteLine(hasher.DoFullHashWithStringUTF8(""));
+            Console.WriteLine(hasher.DoFullHashWithByteArray(new byte[] { 0x61 }));
         }
-        
     }
 }
