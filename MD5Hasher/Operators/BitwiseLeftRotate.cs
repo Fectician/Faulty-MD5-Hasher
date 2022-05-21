@@ -7,10 +7,13 @@ namespace MD5Hasher.Operators
     {
         public byte[] DoOperation(byte[] bytearray, int rotateamount)
         {
-            if (bytearray.Length == 0) { return null; }
+            int length = bytearray.Length;
+            if (length == 0) { return null; }
+            byte[] bytarray = new byte[length];
+            bytearray.CopyTo(bytarray, 0);
 
-            Array.Reverse(bytearray);
-            uint bitsandbytes = BitConverter.ToUInt32(bytearray, 0);
+            Array.Reverse(bytarray);
+            uint bitsandbytes = BitConverter.ToUInt32(bytarray, 0);
 
             bitsandbytes = BitOperations.RotateLeft(bitsandbytes, rotateamount);
 

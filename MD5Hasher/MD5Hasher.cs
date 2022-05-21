@@ -15,50 +15,7 @@ namespace MD5Hasher
         BitwiseLeftRotate bitrotate = new BitwiseLeftRotate();
         BitwiseNot bitnot = new BitwiseNot();
         byte[] A, B, C, D, OIVA, OIVB, OIVC, OIVD;
-        static List<byte[]> KList;
-        static int[] Sarray;
-        public MD5Hasher() 
-        {
-            KListInitializer();
-            SarrayInitializer();
-        }
-        private void SarrayInitializer() 
-        {
-            if (Sarray != null) 
-            {
-                return;
-            }
-            Sarray = new int[64];
-            for (int i = 0; i <= 12; i += 4)
-            {
-                Sarray[i] = 7;
-                Sarray[i + 1] = 12;
-                Sarray[i + 2] = 17;
-                Sarray[i + 3] = 22;
-
-                Sarray[i + 16] = 5;
-                Sarray[i + 17] = 9;
-                Sarray[i + 18] = 14;
-                Sarray[i + 19] = 20;
-
-                Sarray[i + 32] = 4;
-                Sarray[i + 33] = 11;
-                Sarray[i + 34] = 16;
-                Sarray[i + 35] = 23;
-
-                Sarray[i + 48] = 6;
-                Sarray[i + 49] = 10;
-                Sarray[i + 50] = 15;
-                Sarray[i + 51] = 21;
-            }
-        }
-        private void KListInitializer() 
-        {
-            if (KList != null) 
-            {
-                return;
-            }
-            KList = new List<byte[]>()
+        static List<byte[]> KList = new List<byte[]>()
             {
                 new byte[] { 0xd7, 0x6a, 0xa4, 0x78 },
                 new byte[] { 0xe8, 0xc7, 0xb7, 0x56 },
@@ -125,7 +82,8 @@ namespace MD5Hasher
                 new byte[] { 0x2a, 0xd7, 0xd2, 0xbb },
                 new byte[] { 0xeb, 0x86, 0xd3, 0x91 }
             };
-        }
+        static int[] Sarray = new int[] {7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21 };
+        
         public string DoFullHashWithStringUTF8(string input) 
         {
             byte[] bytes = Encoding.UTF8.GetBytes(input);
@@ -133,12 +91,13 @@ namespace MD5Hasher
         }
         public string DoFullHashWithByteArray(byte[] bytes) 
         {
-            long bitlength = bytes.Length * 8;
+            int bitlengthbefore = bytes.Length * 8;
             bytes = bytearrayresizer(bytes, 1);
-            bitsetter(bytes, bytes.Length * 8, true);
+            int bitlengthafter = bytes.Length * 8;
+            bitsetter(bytes, bitlengthafter, true);
 
             int buffer = 0;
-            int moddedbit = ((int)bitlength + 8) % 512;
+            int moddedbit = bitlengthafter % 512;
 
             if (moddedbit > 448) { buffer = 512; }
 
@@ -146,7 +105,7 @@ namespace MD5Hasher
             if (DECIDER > 0)
             { bytes = bytearrayresizer(bytes, DECIDER); }
 
-            byte[] bytese = BitConverter.GetBytes(bitlength);
+            byte[] bytese = BitConverter.GetBytes((long)bitlengthbefore);
             Array.Reverse(bytese);
             bytes = bytes.Concat(bytese).ToArray();
 
